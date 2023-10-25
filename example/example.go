@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"reflect"
@@ -16,13 +17,14 @@ func main() {
 	// docker-compose up -d
 	// or
 	// ncat -l 12201 -u
-	gelfWriter, err := gelf.NewTCPWriter("orwell-internal.ionburst.io:12202")
+	tlsConfig := &tls.Config{}
+	gelfWriter, err := gelf.NewTLSWriter("orwell-internal.ionburst.io:12202", tlsConfig)
 	if err != nil {
 		log.Fatalf("gelf.NewWriter: %s", err)
 	}
-	tcpw, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TCPWriter)
+	w, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TLSWriter)
 
-	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: tcpw}.NewGraylogHandler())
+	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: w}.NewGraylogHandler())
 	logger = logger.With("release", "v1.0.0")
 
 	logger.
@@ -35,4 +37,8 @@ func main() {
 		With("environment", "dev").
 		With("error", fmt.Errorf("an error")).
 		Error("A message")
+
+	time.Sleep(time.Second * 5)
+
+	fmt.Printf("End of example\n")
 }

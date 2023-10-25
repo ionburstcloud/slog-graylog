@@ -68,8 +68,11 @@ func (h *GraylogHandler) Handle(ctx context.Context, record slog.Record) error {
 	}
 
 	go func() {
-		len, err := h.option.Writer.Write(append(bytes, byte('\n')))
-		fmt.Printf("Write: %d %s\n", len, err.Error())
+		_, err := h.option.Writer.Write(append(bytes, byte('\n')))
+		if err != nil {
+			fmt.Printf("Write error: %s\n", err.Error())
+		}
+		//fmt.Printf("Write size: %d\n", len)
 	}()
 
 	return nil
