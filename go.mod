@@ -3,7 +3,7 @@ module github.com/samber/slog-graylog/v2
 go 1.21
 
 require (
-	github.com/Graylog2/go-gelf v0.0.0-20170811154226-7ebf4f536d8f
+	github.com/ionburstcloud/go-gelf v0.0.0-20231025100518-60d8d8f13941
 	github.com/samber/slog-common v0.11.0
 	go.uber.org/goleak v1.2.1
 )

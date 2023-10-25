@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"time"
 
 	"log/slog"
 
-	"github.com/Graylog2/go-gelf/gelf"
+	"github.com/ionburstcloud/go-gelf/gelf"
 	sloggraylog "github.com/samber/slog-graylog/v2"
 )
 
@@ -15,12 +16,13 @@ func main() {
 	// docker-compose up -d
 	// or
 	// ncat -l 12201 -u
-	gelfWriter, err := gelf.NewWriter("localhost:12201")
+	gelfWriter, err := gelf.NewTCPWriter("orwell-internal.ionburst.io:12202")
 	if err != nil {
 		log.Fatalf("gelf.NewWriter: %s", err)
 	}
+	tcpw, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TCPWriter)
 
-	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: gelfWriter}.NewGraylogHandler())
+	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: tcpw}.NewGraylogHandler())
 	logger = logger.With("release", "v1.0.0")
 
 	logger.

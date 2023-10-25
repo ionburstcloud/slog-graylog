@@ -3,10 +3,11 @@ package sloggraylog
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"log/slog"
 
-	"github.com/Graylog2/go-gelf/gelf"
+	"github.com/ionburstcloud/go-gelf/gelf"
 	slogcommon "github.com/samber/slog-common"
 )
 
@@ -15,7 +16,7 @@ type Option struct {
 	Level slog.Leveler
 
 	// connection to graylog
-	Writer *gelf.Writer
+	Writer gelf.Writer
 
 	// optional: customize json payload builder
 	Converter Converter
@@ -67,7 +68,8 @@ func (h *GraylogHandler) Handle(ctx context.Context, record slog.Record) error {
 	}
 
 	go func() {
-		_, _ = h.option.Writer.Write(append(bytes, byte('\n')))
+		len, err := h.option.Writer.Write(append(bytes, byte('\n')))
+		fmt.Printf("Write: %d %s\n", len, err.Error())
 	}()
 
 	return nil
