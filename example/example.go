@@ -9,7 +9,7 @@ import (
 	"log/slog"
 
 	"github.com/ionburstcloud/go-gelf/gelf"
-	sloggraylog "github.com/samber/slog-graylog/v2"
+	sloggraylog "github.com/ionburstcloud/slog-graylog/v2"
 )
 
 func main() {
