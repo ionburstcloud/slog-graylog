@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"log"
-	"reflect"
 	"time"
 
 	"log/slog"
@@ -22,9 +21,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("gelf.NewWriter: %s", err)
 	}
-	w, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TLSWriter)
+	//w, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TLSWriter)
 
-	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: w}.NewGraylogHandler())
+	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: gelfWriter}.NewGraylogHandler())
 	logger = logger.With("release", "v1.0.0")
 
 	logger.
