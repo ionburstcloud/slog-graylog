@@ -8,6 +8,7 @@ import (
 
 	"log/slog"
 
+	"github.com/google/uuid"
 	"github.com/ionburstcloud/go-gelf/gelf"
 	sloggraylog "github.com/ionburstcloud/slog-graylog/v2"
 )
@@ -17,14 +18,14 @@ func main() {
 	// or
 	// ncat -l 12201 -u
 	tlsConfig := &tls.Config{}
-	gelfWriter, err := gelf.NewTLSWriter("orwell-internal.ionburst.io:12202", tlsConfig)
+	gelfWriter, err := gelf.NewTLSWriter("orwell-eu2.ionburst.io:12202", tlsConfig)
 	if err != nil {
 		log.Fatalf("gelf.NewWriter: %s", err)
 	}
 	//w, _ := reflect.ValueOf(gelfWriter).Interface().(*gelf.TLSWriter)
 
 	logger := slog.New(sloggraylog.Option{Level: slog.LevelDebug, Writer: gelfWriter}.NewGraylogHandler())
-	logger = logger.With("release", "v1.0.0")
+	logger = logger.With("service", "defined source")
 
 	logger.
 		With(
@@ -35,7 +36,21 @@ func main() {
 		).
 		With("environment", "dev").
 		With("error", fmt.Errorf("an error")).
-		Error("A message")
+		Error("An error message")
+
+	logger.Debug("A debug message", "Some_number", 14, "Some_text", "Blah blah")
+
+	logger.With("Some_number", 14).
+		With("Some_text", "Blah blah").
+		With("Some_uuid", uuid.New()).
+		Warn("A warning message")
+
+	logger.With("Some_usefeul_number", 14).
+		With("Some_useful_text", "Blah blah").
+		With("Some_useful_uuid", uuid.New()).
+		Info("An information message")
+
+	logger.Info("Another informational", "Index", 5, "Reason", "Reason string", "UUID tag", uuid.New(), "UUID_tag", uuid.New())
 
 	time.Sleep(time.Second * 5)
 
