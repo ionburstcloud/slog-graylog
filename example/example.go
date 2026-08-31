@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"uuid"
 
 	"log/slog"
 
-	"github.com/google/uuid"
 	"github.com/ionburstcloud/go-gelf/gelf"
 	sloggraylog "github.com/ionburstcloud/slog-graylog/v2"
 )
